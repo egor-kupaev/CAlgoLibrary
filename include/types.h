@@ -1,6 +1,6 @@
 // Copyright (c) 2020 Egor Kupaev
-// This work is distributed under the Apache-2.0 License
-// See the accompanying LICENSE file or http://www.apache.org/licenses/
+// This work is distributed under the MIT License
+// See the accompanying LICENSE file or https://mit-license.org/
 
 #ifndef TYPES_H
 #define TYPES_H
