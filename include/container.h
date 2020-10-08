@@ -12,7 +12,7 @@ struct CAlgoContainerImpl;
 
 typedef struct CAlgoContainerImpl CAlgoContainer;
 
-CAlgoStatus CAlgoMake(CAlgoContainerType_e containerType, size_t typeSize, CAlgoContainer **ppContainer);
+CAlgoStatus CAlgoMakeVector(size_t typeSize, CAlgoContainer **ppContainer);
 
 CAlgoStatus CAlgoReserve(CAlgoContainer *pContainer, size_t newSize);
 

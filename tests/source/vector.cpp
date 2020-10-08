@@ -14,26 +14,21 @@ extern "C" {
 TEST(VectorMake, Correct)
 {
     CAlgoContainer *vector;
-    EXPECT_EQ(CAlgoStatusOK, CAlgoMake(CAlgoVector, sizeof(int), &vector));
+    EXPECT_EQ(CAlgoStatusOK, CAlgoMakeVector(sizeof(int), &vector));
     EXPECT_EQ(CAlgoStatusOK, CAlgoDestroy(&vector));
 }
 
 TEST(VectorMake, VectorNull)
 {
-    EXPECT_EQ(CAlgoStatusNullPtr, CAlgoMake(CAlgoVector, sizeof(int), NULL));
+    EXPECT_EQ(CAlgoStatusNullPtr, CAlgoMakeVector(sizeof(int), NULL));
 }
 
 TEST(VectorMake, BadSize)
 {
     CAlgoContainer *vector;
-    EXPECT_EQ(CAlgoStatusBadSize, CAlgoMake(CAlgoVector, 0u, &vector));
+    EXPECT_EQ(CAlgoStatusBadSize, CAlgoMakeVector(0u, &vector));
 }
 
-TEST(VectorMake, BadType)
-{
-    CAlgoContainer *vector;
-    EXPECT_EQ(CAlgoStatusBadContainerType, CAlgoMake(CAlgoContainerLast, sizeof(int), &vector));
-}
 //
 //// PushBack part
 //template<typename T>

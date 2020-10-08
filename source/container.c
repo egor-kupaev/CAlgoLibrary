@@ -8,49 +8,38 @@
 #include "vector.h"
 #include "defines.h"
 
-struct CAlgoContainerImpl
-{
-    CAlgoContainerType_e type;
-    void *pImpl;
-};
 
-typedef CAlgoStatus (*MakeFunction)(size_t, void **);
-
-typedef void (*DestroyFunction)(void **);
+typedef void (*DestroyFunction_t)(void **);
 
 typedef struct
 {
-    MakeFunction makeFunction;
-    DestroyFunction destroyFunction;
-} VTableEntry;
+    DestroyFunction_t DestroyFunction;
+} VTable;
 
-static VTableEntry *InternalGetVTable()
+struct CAlgoContainerImpl
 {
-// Fancy compile-time lambda-macro that lives longer than i want
-#define CALGO_ADD_VTABLE_ENTRY(type) \
-             {.makeFunction = type ## MakeFunction, \
-              .destroyFunction = type ## DestroyFunction}
+    VTable *vTable;
+    void *this;
+};
 
-    static VTableEntry vTable[CAlgoContainerLast] = {
-        CALGO_ADD_VTABLE_ENTRY(Vector)
+#define CALGO_ADD_VTABLE_ENTRY(type, fname) .fname ## Function = type ## fname ## Function
+
+CAlgoStatus CAlgoMakeVector(size_t typeSize, CAlgoContainer **ppContainer)
+{
+    static VTable vTable = {
+        CALGO_ADD_VTABLE_ENTRY(Vector, Destroy)
     };
 
-    return vTable;
-}
-
-CAlgoStatus CAlgoMake(CAlgoContainerType_e containerType, size_t typeSize, CAlgoContainer **ppContainer)
-{
-    CALGO_CHECK_TYPE(containerType);
     CALGO_CHECK_TYPE_SIZE(typeSize);
     CALGO_CHECK_NULL(ppContainer);
 
     (*ppContainer) = (CAlgoContainer *) malloc(sizeof(CAlgoContainer));
     CALGO_CHECK_ALLOCATION((*ppContainer));
 
-    (*ppContainer)->pImpl = NULL;
-    (*ppContainer)->type = containerType;
+    (*ppContainer)->this = NULL;
+    (*ppContainer)->vTable = &vTable;
 
-    return InternalGetVTable()[containerType].makeFunction(typeSize, (void **) (&((*ppContainer)->pImpl)));
+    return VectorMakeFunction(typeSize, (void **) (&((*ppContainer)->this)));
 }
 
 //CAlgoStatus CAlgoReserve(CAlgoContainer *pContainer, size_t newSize);
@@ -63,7 +52,7 @@ CAlgoStatus CAlgoDestroy(CAlgoContainer **ppContainer)
 {
     CALGO_CHECK_NULL(ppContainer);
 
-    InternalGetVTable()[(*ppContainer)->type].destroyFunction((void **) (&((*ppContainer)->pImpl)));
+    (*ppContainer)->vTable->DestroyFunction((void **) (&((*ppContainer)->this)));
     free(*ppContainer);
     ppContainer = NULL;
 
