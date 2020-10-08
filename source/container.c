@@ -26,18 +26,14 @@ typedef struct
 
 static VTableEntry *InternalGetVTable()
 {
-    static VTableEntry vTable[CAlgoContainerLast - 1u];
-    static bool initialized = false;
-
-    if (!initialized) {
-        // just compile-time macro-lambda-kind-of-thing :)
+// Fancy compile-time lambda-macro that lives longer than i want
 #define CALGO_ADD_VTABLE_ENTRY(type) \
-             vTable[CAlgo ## type].makeFunction = type ## MakeFunction; \
-             vTable[CAlgo ## type].destroyFunction = type ## DestroyFunction
+             {.makeFunction = type ## MakeFunction, \
+              .destroyFunction = type ## DestroyFunction}
 
-        CALGO_ADD_VTABLE_ENTRY(Vector);
-        initialized = true;
-    }
+    static VTableEntry vTable[CAlgoContainerLast] = {
+        CALGO_ADD_VTABLE_ENTRY(Vector)
+    };
 
     return vTable;
 }
