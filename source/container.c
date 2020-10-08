@@ -14,11 +14,6 @@ struct CAlgoContainerImpl
     void *pImpl;
 };
 
-// Add check for bad_alloc
-#define CALGO_CREATE_VTABLE(type) \
-     vTables[CAlgo ## type].makeFunction = type ## MakeFunction; \
-     vTables[CAlgo ## type].destroyFunction = type ## DestroyFunction;
-
 typedef CAlgoStatus (*MakeFunction)(size_t, void **);
 
 typedef void (*DestroyFunction)(void **);
@@ -27,19 +22,24 @@ typedef struct
 {
     MakeFunction makeFunction;
     DestroyFunction destroyFunction;
-} VTable;
+} VTableEntry;
 
-inline static VTable *InternalGetVTable()
+static VTableEntry *InternalGetVTable()
 {
-    static VTable vTables[CAlgoContainerLast - 1u];
+    static VTableEntry vTable[CAlgoContainerLast - 1u];
     static bool initialized = false;
 
     if (!initialized) {
-        CALGO_CREATE_VTABLE(Vector);
+        // just compile-time macro-lambda-kind-of-thing :)
+#define CALGO_ADD_VTABLE_ENTRY(type) \
+             vTable[CAlgo ## type].makeFunction = type ## MakeFunction; \
+             vTable[CAlgo ## type].destroyFunction = type ## DestroyFunction
+
+        CALGO_ADD_VTABLE_ENTRY(Vector);
         initialized = true;
     }
 
-    return vTables;
+    return vTable;
 }
 
 CAlgoStatus CAlgoMake(CAlgoContainerType_e containerType, size_t typeSize, CAlgoContainer **ppContainer)
@@ -74,4 +74,4 @@ CAlgoStatus CAlgoDestroy(CAlgoContainer **ppContainer)
     return CAlgoStatusOK;
 }
 
-#include "vector.cxx"
+#include "defs/vector_defs.c"
