@@ -3,7 +3,6 @@
 // See the accompanying LICENSE file or https://mit-license.org/
 
 #include <stdlib.h>
-#include <stdbool.h>
 #include <container.h>
 #include "vector.h"
 #include "defines.h"
@@ -39,7 +38,7 @@ CAlgoStatus CAlgoMakeVector(size_t typeSize, CAlgoContainer **ppContainer)
     (*ppContainer)->this = NULL;
     (*ppContainer)->vTable = &vTable;
 
-    return VectorMakeFunction(typeSize, (void **) (&((*ppContainer)->this)));
+    return VectorMakeFunction((void **) (&((*ppContainer)->this)), typeSize);
 }
 
 //CAlgoStatus CAlgoReserve(CAlgoContainer *pContainer, size_t newSize);

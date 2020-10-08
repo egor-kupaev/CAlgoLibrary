@@ -9,7 +9,7 @@
 #include <types.h>
 #include <stddef.h>
 
-static CAlgoStatus VectorMakeFunction(size_t typeSize, void **ppVector);
+static CAlgoStatus VectorMakeFunction(void **const pThis, const size_t typeSize);
 
 //CAlgoStatus CAlgoReserve(CAlgoContainer *pVector, size_t newSize);
 //
@@ -17,6 +17,6 @@ static CAlgoStatus VectorMakeFunction(size_t typeSize, void **ppVector);
 //
 //CAlgoStatus CAlgoGetElemVector(CAlgoContainer *pVector, size_t index, void **ppValue);
 
-static void VectorDestroyFunction(void **ppVector);
+static void VectorDestroyFunction(void **pThis);
 
 #endif //VECTOR_H

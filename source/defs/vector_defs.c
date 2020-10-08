@@ -19,12 +19,12 @@ struct CAlgoVectorImpl
 
 typedef struct CAlgoVectorImpl Vector;
 
-static CAlgoStatus VectorMakeFunction(const size_t typeSize, void **const ppVector)
+static CAlgoStatus VectorMakeFunction(void **const pThis, const size_t typeSize)
 {
-    (*ppVector) = malloc(sizeof(Vector));
-    CALGO_CHECK_ALLOCATION(ppVector);
+    (*pThis) = malloc(sizeof(Vector));
+    CALGO_CHECK_ALLOCATION(pThis);
 
-    Vector *pVector = (Vector *) (*ppVector);
+    Vector *pVector = (Vector *) (*pThis);
     pVector->size = 0u;
     pVector->pData = NULL;
     pVector->capacity = 0u;
@@ -104,9 +104,9 @@ static CAlgoStatus VectorMakeFunction(const size_t typeSize, void **const ppVect
 //    return CAlgoStatusOK;
 //}
 //
-static void VectorDestroyFunction(void **ppVector)
+static void VectorDestroyFunction(void **pThis)
 {
-    Vector *pVector = (Vector *) (*ppVector);
+    Vector *pVector = (Vector *) (*pThis);
     if (pVector->pData != NULL) {
         free(pVector->pData);
     }
