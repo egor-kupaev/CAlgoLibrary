@@ -10,10 +10,16 @@ typedef enum
     CAlgoStatusOK = 0u,
     CAlgoStatusError = -1,
     CAlgoStatusNullPtr = -2,
-    CAlgoStatusZeroTypeSize = -3,
     CAlgoStatusBadAlloc = -4,
     CAlgoStatusBadSize = -5,
-    CAlgoStatusOutOfBounds = -6
+    CAlgoStatusOutOfBounds = -6,
+    CAlgoStatusBadContainerType = -7
 } CAlgoStatus;
+
+typedef enum
+{
+    CAlgoVector = 0u,
+    CAlgoContainerLast
+} CAlgoContainerType_e;
 
 #endif //TYPES_H

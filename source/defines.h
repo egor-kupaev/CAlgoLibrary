@@ -8,6 +8,8 @@
 #include <assert.h>
 
 #define CALGO_CHECK_NULL(p) if (!p) return CAlgoStatusNullPtr
+#define CALGO_CHECK_TYPE(type) if (type >= CAlgoContainerLast) return CAlgoStatusBadContainerType
+#define CALGO_CHECK_TYPE_SIZE(size) if (size == 0u) return CAlgoStatusBadSize
 #define CALGO_CHECK_STATUS(status) if (CAlgoStatusOK != status) return status
 #define CALGO_CHECK_ALLOCATION(p) if (p == NULL) return CAlgoStatusBadAlloc
 

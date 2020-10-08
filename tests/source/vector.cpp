@@ -7,67 +7,87 @@
 #include "blob.hpp"
 
 extern "C" {
-#include "vector.h"
+#include "container.h"
 }
 
 // MakeVector part TODO: Add correct flow test case
-TEST(VectorMakeVector, VectorNull)
+TEST(VectorMake, Correct)
 {
-    EXPECT_EQ(CAlgoStatusNullPtr, CAlgoMakeVector(sizeof(int), NULL));
+    CAlgoContainer *vector;
+    EXPECT_EQ(CAlgoStatusOK, CAlgoMake(CAlgoVector, sizeof(int), &vector));
+    EXPECT_EQ(CAlgoStatusOK, CAlgoDestroy(&vector));
 }
 
-TEST(VectorMakeVector, TypeSizeZero)
+TEST(VectorMake, VectorNull)
 {
-    CAlgoVector vector;
-    EXPECT_EQ(CAlgoStatusZeroTypeSize, CAlgoMakeVector(0u, &vector));
+    EXPECT_EQ(CAlgoStatusNullPtr, CAlgoMake(CAlgoVector, sizeof(int), NULL));
 }
 
-// PushBack part
-template<typename T>
-class VectorPushBack: public ::testing::Test
+TEST(VectorMake, BadSize)
 {
-};
-
-using VectorPushBackTypes = ::testing::Types<int32_t, uint64_t, double, BLOB>;
-
-TYPED_TEST_SUITE(VectorPushBack, VectorPushBackTypes);
-
-TYPED_TEST(VectorPushBack, Sample)
-{
-    // Construct a vector
-    CAlgoVector vector;
-    EXPECT_EQ(CAlgoStatusOK, CAlgoMakeVector(sizeof(TypeParam), &vector));
-
-    // Push back five values
-    TypeParam value{1};
-    for (size_t i = 0u; i < 5u; ++i) {
-        EXPECT_EQ(CAlgoStatusOK, CAlgoPushBackVector(&vector, &value));
-    }
-
-    // Check whether the five pushed values are equal to the reference value
-    for (size_t i = 0u; i < 5u; ++i) {
-        TypeParam *pElem = NULL;
-        EXPECT_EQ(CAlgoStatusOK, CAlgoGetElemVector(&vector, i, (void **) &pElem));
-
-        EXPECT_EQ(value, *pElem);
-    }
-
-    // Destruct the vector
-    EXPECT_EQ(CAlgoStatusOK, CAlgoDestroyVector(&vector));
+    CAlgoContainer *vector;
+    EXPECT_EQ(CAlgoStatusBadSize, CAlgoMake(CAlgoVector, 0u, &vector));
 }
 
-TEST(VectorPushBack, PushBack_VectorNull)
+TEST(VectorMake, BadType)
 {
-    int value{1};
-    EXPECT_EQ(CAlgoStatusNullPtr, CAlgoPushBackVector(NULL, &value));
+    CAlgoContainer *vector;
+    EXPECT_EQ(CAlgoStatusBadContainerType, CAlgoMake(CAlgoContainerLast, sizeof(int), &vector));
 }
+//
+//// PushBack part
+//template<typename T>
+//class VectorPushBack: public ::testing::Test
+//{
+//};
+//
+//using VectorPushBackTypes = ::testing::Types<int32_t, uint64_t, double, BLOB>;
+//
+//TYPED_TEST_SUITE(VectorPushBack, VectorPushBackTypes);
+//
+//TYPED_TEST(VectorPushBack, Sample)
+//{
+//    // Construct a vector
+//    CAlgoVector vector;
+//    EXPECT_EQ(CAlgoStatusOK, CAlgoMakeVector(sizeof(TypeParam), &vector));
+//
+//    // Push back five values
+//    TypeParam value{1};
+//    for (size_t i = 0u; i < 5u; ++i) {
+//        EXPECT_EQ(CAlgoStatusOK, CAlgoPushBackVector(&vector, &value));
+//    }
+//
+//    // Check whether the five pushed values are equal to the reference value
+//    for (size_t i = 0u; i < 5u; ++i) {
+//        TypeParam *pElem = NULL;
+//        EXPECT_EQ(CAlgoStatusOK, CAlgoGetElemVector(&vector, i, (void **) &pElem));
+//
+//        EXPECT_EQ(value, *pElem);
+//    }
+//
+//    // Destruct the vector
+//    EXPECT_EQ(CAlgoStatusOK, CAlgoDestroyVector(&vector));
+//}
+//
+//TEST(VectorPushBack, PushBack_VectorNull)
+//{
+//    int value{1};
+//    EXPECT_EQ(CAlgoStatusNullPtr, CAlgoPushBackVector(NULL, &value));
+//}
+//
+//TEST(VectorPushBack, PushBack_ValueNull)
+//{
+//    CAlgoVector vector;
+//    EXPECT_EQ(CAlgoStatusOK, CAlgoMakeVector(sizeof(int), &vector));
+//    EXPECT_EQ(CAlgoStatusNullPtr, CAlgoPushBackVector(&vector, NULL));
+//    EXPECT_EQ(CAlgoStatusOK, CAlgoDestroyVector(&vector));
+//}
 
-TEST(VectorPushBack, PushBack_ValueNull)
+// Destroy part
+// MakeVector part TODO: Add correct flow test case
+TEST(Destroy, Null)
 {
-    CAlgoVector vector;
-    EXPECT_EQ(CAlgoStatusOK, CAlgoMakeVector(sizeof(int), &vector));
-    EXPECT_EQ(CAlgoStatusNullPtr, CAlgoPushBackVector(&vector, NULL));
-    EXPECT_EQ(CAlgoStatusOK, CAlgoDestroyVector(&vector));
+    EXPECT_EQ(CAlgoStatusNullPtr, CAlgoDestroy(NULL));
 }
 
 // TODO: Add tests for Reserve, Destroy, GetElem APIs
